@@ -1,7 +1,42 @@
-function [theta,sigma,Z,cost,point] = superquadricSegment(p0, alpha, K, point, T, mergeThre, para)
+function [theta,sigma,Z] = superquadricSegment(point)
+
+% Written by Yuwei Wu @ NUS
+%            Weixiao Liu @ JHU, NUS
+% -------------------------------------------------------------------------
+% DESCRIPTION: This algorithm solves for the shape abstraction of a given
+%              point cloud via nonparametric Bayesian model. By modeling
+%              the generation of points as observations sampled from an 
+%              infinite mixture of Gaussian Superquadric Taper Models (GSTM). 
+%              Our approach formulates the abstraction as a clustering 
+%              problem, in which: 1) each point is assigned to a cluster via 
+%              the Chinese Restaurant Process (CRP); 2) a primitive representation 
+%              is optimized for each cluster, and 3) a merging post-process 
+%              is incorporated to provide a concise representation.
+%
+% INPUT: point - point cloud array (3 x N)
+%
+% OUTPUT: theta - fitted superquadrics parameters
+%         sigma - noise factor of each fitted superquadric
+%         Z     - cluster assignment of each point      
+% -------------------------------------------------------------------------
+
+%% default parameter
+p0 = 0.2;
+alpha = 0.5;
+K = 30;
+T = 30;
+mergeThre = 5e-3;
+para.iterMax = 4;
+para.iterMin = 2;
+para.tolerance = 5e-3;
+para.relative_tolerance = 0.1;
+para.iterLSQ_max = 2;
+para.max_switch = 2;
+para.adaptive_upper = 1;
+% change to true if want to visualize each iteration
+para.realtime_rendering = false;
 
 %% setup
-
 % average distance
 point = unique(point', 'rows');
 [~, averageDist] = knnsearch(point,point,'K',6);
@@ -15,19 +50,13 @@ Z = zeros(N,K);
 fixedZ = zeros(N,K);
 threshold = 20;
 
-% color
-meshColor = [[0, 0.4470, 0.7410];[0.8500, 0.3250, 0.0980];[0.9290, 0.6940, 0.1250];[0.4940, 0.1840, 0.5560];...
-    [0.4660, 0.6740, 0.1880];[0.3010, 0.7450, 0.9330];[0.6350, 0.0780, 0.1840];[1.0000, 0.0745, 0.6510]];
-pointColor = [[0, 0.4470, 0.7410];[0.8500, 0.3250, 0.0980];[0.9290, 0.6940, 0.1250];[0.4940, 0.1840, 0.5560];...
-    [0.4660, 0.6740, 0.1880];[0.3010, 0.7450, 0.9330];[0.6350, 0.0780, 0.1840];[1.0000, 0.0745, 0.6510]];
-
-
 %% initilization
 sigma = zeros(1,K);
 theta = zeros(K,13);
 cost = inf(1,K);
 Ik = eye(K);
 
+% Firstly segment the point cloud into K clusters by K-means
 rng(1)
 pIdx = kmeans(point',K, 'Start','uniform', 'Distance','cityblock');
 for i = 1:K
@@ -38,7 +67,7 @@ for i = 1:K
     theta(i,:) = superquadricInit(p,ones(1,size(p,2)));
 end
 
-%% start sample
+%% optimization-based Gibbs sampling
 for iter = 1:T
     
     %% separate && split
@@ -176,7 +205,7 @@ for iter = 1:T
         
     end
 
-    %% sample theta
+    %% optimize parameters of each superquadric
     for j = 1:K
         if iter > 15
             idx = Z(:,j) == 1;
@@ -221,7 +250,7 @@ for iter = 1:T
     end
     
     if para.realtime_rendering
-        visualization(Z, K, theta, point, pointColor, meshColor, 2, 3, [0 90])
+        visualization(Z, K, theta, point, 2, 3, [0 90])
     end
     
     
@@ -229,8 +258,8 @@ for iter = 1:T
 end
 [n,Z,fixedZ,theta,sigma,K,Ik,cost] = superquadricMerge(Z,iter,fixedZ,K,theta,sigma,cost,point,para, mergeThre);
 
-
-visualization(Z, K, theta, point, pointColor, meshColor, 2, 3, [0 90])
+% visualize result
+visualization(Z, K, theta, point, 2, 3, [0 90])
 
 
 
