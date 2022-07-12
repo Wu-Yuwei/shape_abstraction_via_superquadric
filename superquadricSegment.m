@@ -46,8 +46,6 @@ for iter = 1:T
         split_separate(point, cost, theta, sigma, Z, fixedZ, iter, K, averageDist, threshold, Ik, para);
 
     %% sample Z
-%     [cost, theta, sigma, Z, fixedZ, K, n, Ik] = ...
-%         CRP(point, cost, theta, sigma, Z, fixedZ, iter, K, averageDist, threshold, alpha, N, p0, Ik);
     flag = 0;
     [cor,~] = correspondence_new(point, theta, sigma.^2);
     P = point;
@@ -87,7 +85,7 @@ for iter = 1:T
         if flag == 1
             newPoint = point(:,(Z(:,K+1)==1)');
             if length(newPoint) > threshold
-                [labels,numClusters] = pcsegdist(pointCloud(newPoint'), averageDist*2);
+                [labels,~] = pcsegdist(pointCloud(newPoint'), averageDist*2);
                 noCluster = mode(labels);
                 cIdx = labels == noCluster;
                 if sum(cIdx) > threshold
@@ -134,7 +132,7 @@ for iter = 1:T
         NIdx = [];
         for j = 1:K
             clusterPoint = point(:,(Z(:,j)==1)');
-            [labels,numClusters] = pcsegdist(pointCloud(clusterPoint'), averageDist*2);
+            [labels,~] = pcsegdist(pointCloud(clusterPoint'), averageDist*2);
             noCluster = mode(labels);
             cIdx = labels == noCluster;
             if sum(cIdx) <= threshold
@@ -171,13 +169,13 @@ for iter = 1:T
             weight = (n-nj)/(alpha+N-1).*cor(j,:);
             if sum(weight) == 0
                 continue
-    %                 weight = ones(1,K);
             end
             z = randsample(K,1,true,weight);
             Z(pp,:) = Ik(z,:);
         end
         
     end
+
     %% sample theta
     for j = 1:K
         if iter > 15
@@ -188,6 +186,7 @@ for iter = 1:T
             cIdx = labels == noCluster;
             p = p(:,cIdx');
             x0 = superquadricInit(p, ones(1,sum(cIdx)));
+            para.iterMax = floor(iter/2);
             [x, D, ~] = superquadricFitting(p, para, x0);
             theta(j,:) = x;
             cost(1,j) = D;
@@ -208,7 +207,6 @@ for iter = 1:T
         fixedZ(:,fixedIdx) = Z(:,fixedIdx);
     end    
     
-
     %% sample sigma
     for j = 1:K
         a = (n(j)-1)/2;

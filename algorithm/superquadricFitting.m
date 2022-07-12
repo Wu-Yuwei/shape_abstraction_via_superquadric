@@ -1,10 +1,5 @@
 function [x, cost, residual] = superquadricFitting(point, para, x0)
 
-% zIdx = T ~= 0;
-% point = point(:,zIdx);
-% T = T(zIdx);
-% pIdx = pIdx(zIdx);
-
 iter_max = para.iterMax;
 iter_min = para.iterMin;
 tolerance = para.tolerance;
@@ -142,9 +137,6 @@ for iter = 1 : iter_max
         residual = residual_n;
     end
 
-end
-if ~isreal(x)
-    a = 1;
 end
 
 end

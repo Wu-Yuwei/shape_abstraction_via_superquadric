@@ -45,6 +45,7 @@ for m1 = 1:K-1
         idx = Z(:,m1) | Z(:,m2) == 1;
         mergedPoint = point(:,idx);
         x0 = superquadricInit(mergedPoint,ones(1,sum(idx)));
+        para.iterMax = 15;
         [x, D, ~] = superquadricFitting(mergedPoint, para, x0);
         V1 = 2*x1(1)*x1(2)*x1(3)*x1(4)*x1(5)*beta(x1(1)/2+1,x1(1))*beta(x1(2)/2,x1(2)/2);
         V2 = 2*x2(1)*x2(2)*x2(3)*x2(4)*x2(5)*beta(x2(1)/2+1,x2(1))*beta(x2(2)/2,x2(2)/2);
