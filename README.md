@@ -6,7 +6,7 @@ This repo provides source code for the ECCV 2022 paper:
 > Yuwei Wu, Weixiao Liu, [Sipu Ruan](https://ruansp.github.io/), [Gregory S. Chirikjian](https://cde.nus.edu.sg/me/staff/chirikjian-gregory-s/)
 
 We propose an algorithm to infer a superquadric-based abstraction from a point cloud with good accuracy and concise primitives.  
-<img src="/figures/SQ.png" alt="superquadrics" width="600"/>
+<img src="/figures/SQ.PNG" alt="superquadrics" width="600"/>
 
 ## Abstration
 
