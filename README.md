@@ -2,8 +2,8 @@
 
 This repo provides source code for the ECCV 2022 paper:
 
-> [**Primitive-based Shape Abstraction via Nonparametric Bayesian Inference**](https://https://arxiv.org/pdf/2203.14714.pdf "ArXiv version of the paper.")  
-> Weixiao Liu, Yuwei Wu, [Sipu Ruan](https://ruansp.github.io/), [Gregory S. Chirikjian](https://cde.nus.edu.sg/me/staff/chirikjian-gregory-s/)
+> [**Primitive-based Shape Abstraction via Nonparametric Bayesian Inference**](https://arxiv.org/pdf/2203.14714.pdf "ArXiv version of the paper.")  
+> Yuwei Wu, Weixiao Liu, [Sipu Ruan](https://ruansp.github.io/), [Gregory S. Chirikjian](https://cde.nus.edu.sg/me/staff/chirikjian-gregory-s/)
 
 
 ## Abstration
