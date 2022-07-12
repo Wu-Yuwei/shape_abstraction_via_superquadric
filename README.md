@@ -7,7 +7,7 @@ This repo provides source code for the ECCV 2022 paper:
 
 We propose an algorithm to infer a superquadric-based abstraction from a point cloud with good accuracy and concise primitives.  
 
-<img src="/figures/SQ.PNG" alt="superquadrics" width="600"/ align="center">
+<img src="/figures/SQ.PNG" alt="superquadrics" width="600" align="center"/>
 
 ## Abstration
 
@@ -32,7 +32,7 @@ Should be compatible with releases newer than R2017.
 ### File Structure
 
 - `superquadricSegment.m` is the main code for implementing our shape abstraction algorithm.
-- Add `/algorithm` and `/utility_functions` to MATLAB path before runing the code
+- Add `/algorithm` and `/utility_functions` to MATLAB path before running the code
 
 ### Run Demo
 
