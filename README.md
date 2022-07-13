@@ -1,6 +1,6 @@
 # Primitive-based Shape Abstraction via Nonparametric Bayesian Inference
 
-This repo provides source code for the ECCV 2022 paper:
+This repo provides the source code for the ECCV 2022 paper:
 
 > [**Primitive-based Shape Abstraction via Nonparametric Bayesian Inference**](https://arxiv.org/pdf/2203.14714.pdf "ArXiv version of the paper.")  
 > Yuwei Wu, Weixiao Liu, [Sipu Ruan](https://ruansp.github.io/), [Gregory S. Chirikjian](https://cde.nus.edu.sg/me/staff/chirikjian-gregory-s/)
@@ -22,12 +22,12 @@ The results indicate that our method outperforms the state-of-the-art in terms o
 
 ## Implementations
 
-This repo provides MATLAB implementation. (Python code will be coming soon!)
+This repo provides the MATLAB implementation.
 
 ### Installation
 
-The code is written and tested on MATALB R2022a.
-Should be compatible with releases newer than R2017.
+The code is written and tested on MATALB R2022a and
+should be compatible with releases newer than R2017.
 
 ### File Structure
 

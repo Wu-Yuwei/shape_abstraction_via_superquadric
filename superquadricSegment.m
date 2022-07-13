@@ -33,6 +33,7 @@ para.relative_tolerance = 0.1;
 para.iterLSQ_max = 2;
 para.max_switch = 2;
 para.adaptive_upper = 1;
+
 % change to true if want to visualize each iteration
 para.realtime_rendering = false;
 
