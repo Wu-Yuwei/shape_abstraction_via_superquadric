@@ -70,12 +70,10 @@ end
 
 %% optimization-based Gibbs sampling
 for iter = 1:T
-    
-    %% separate && split
-    [cost, theta, sigma, Z, fixedZ, K, n, Ik] = ...
-        split_separate(point, cost, theta, sigma, Z, fixedZ, iter, K, averageDist, threshold, Ik, para);
 
     %% sample Z
+    [cost, theta, sigma, Z, fixedZ, K, n, Ik] = ...
+        split_separate(point, cost, theta, sigma, Z, fixedZ, iter, K, averageDist, threshold, Ik, para);
     flag = 0;
     [cor,~] = correspondence_new(point, theta, sigma.^2);
     P = point;

@@ -2,9 +2,11 @@ clear
 clc
 close all
 
+addpath('algorithm/')
+addpath('utility_functions/')
 %% read and prepare data
 % demo includes chair && table && lamp
-pc = pcread('example/chair.ply'); 
+pc = pcread('example/lamp.ply'); 
 pcd = downSample(pc,3500,3000);
 point = double(pcd.Location'); 
 idx = randperm(length(point));
