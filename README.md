@@ -27,7 +27,7 @@ This repo provides the MATLAB implementation.
 ### Installation
 
 The code is written and tested on MATALB R2022a and
-should be compatible with releases newer than R2017.
+should be compatible with releases newer than R2018a.
 
 ### File Structure
 
