@@ -38,6 +38,15 @@ para.adaptive_upper = 1;
 para.realtime_rendering = false;
 
 %% setup
+% scale point cloud
+idx = randperm(length(point));
+point = point(:,idx);
+V = (max(point(1, :)) - min(point(1, :))) * (max(point(2, :)) ...
+    - min(point(2, :))) * (max(point(3, :)) - min(point( 3, :)));
+
+scale = (200/V)^(1/3);
+point = point * scale;
+
 % average distance
 point = unique(point', 'rows');
 [~, averageDist] = knnsearch(point,point,'K',6);
