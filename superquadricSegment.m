@@ -1,4 +1,4 @@
-function [theta,sigma,Z] = superquadricSegment(point)
+function [theta,sigma,Z, scale] = superquadricSegment(point, mergeThre)
 
 % Written by Yuwei Wu @ NUS
 %            Weixiao Liu @ JHU, NUS
@@ -25,7 +25,9 @@ p0 = 0.2;
 alpha = 0.5;
 K = 30;
 T = 30;
-mergeThre = 5e-3;
+if nargin == 1
+    mergeThre = 5e-3;
+end
 para.iterMax = 4;
 para.iterMin = 2;
 para.tolerance = 5e-3;
@@ -79,6 +81,8 @@ end
 
 %% optimization-based Gibbs sampling
 for iter = 1:T
+
+    
 
     %% sample Z
     [cost, theta, sigma, Z, fixedZ, K, n, Ik] = ...

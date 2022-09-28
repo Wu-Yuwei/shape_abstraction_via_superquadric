@@ -49,14 +49,19 @@ psi2_ = psi((yc./a2).^2, (xc./a1).^2, e2, alpha_psi, beta_psi);
 HH = H(xc,yc,zc, a1, a2, a3, e1, e2, alpha_phi,phi1);
 r_0 = vecnorm(Xc);
 D = r_0 .* (HH .^ (-1./2) - 1);
-DH = dH_dX(xc,yc,zc,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_h, HH, psi1, psi2,psi1_,psi2_);
+
+DHDa1 = dH_da1(a1, HH, psi1, psi2);
+DHDa2 = dH_da2(a2, HH, psi1, psi2_);
+DHDa3 = dH_da3(a3, HH, psi2_);
+
+DH = dH_dX(xc,yc,zc,a1,a2,a3, alpha_h, DHDa1,DHDa2,DHDa3);
 
 
-J = [dG_de1(xc,yc,zc,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_l, HH, psi1,psi2,psi1_,psi2_);
-     dG_de2(xc,yc,zc,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_l, HH, psi1,psi2,psi1_,psi2_);
-     dG_da1(xc,yc,zc,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH, psi1,psi2,psi1_,psi2_);
-     dG_da2(xc,yc,zc,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH, psi1,psi2,psi1_,psi2_);
-     dG_da3(xc,yc,zc,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH, kx, ky, alpha, beta, gamma, tx,ty,tz, psi1,psi2,psi1_,psi2_);
+J = [dG_de1(xc,yc,zc, alpha_l, HH, psi1,psi1_);
+     dG_de2(xc,yc,zc, alpha_l, HH, psi1,psi2,psi2_);
+     dG_da1(xc,yc,zc, HH, DHDa1);
+     dG_da2(xc,yc,zc, HH, DHDa2);
+     dG_da3(xc,yc,zc,a3, HH, kx, ky, alpha, beta, gamma, tx,ty,tz, DHDa3);
      dG_dgamma(xc,yc,zc,gamma,beta,alpha,tx,ty,tz, xx,yy,zz, DH, a1,a2,a3, HH,kx,ky)
      dG_dbeta(xc,yc,zc,gamma,beta,alpha,tx,ty,tz, xx,yy,zz, DH, a1,a2,a3, HH,kx,ky)
      dG_dalpha(xc,yc,zc,gamma,beta,alpha,tx,ty,tz, xx,yy,zz, DH,a1,a2,a3, HH,kx,ky)
@@ -76,7 +81,7 @@ end
 %% auxiliary functions
 function value = phi(x, y, t, alpha)
     u = max(x,y);
-    v = min(x,y);
+%     v = min(x,y);
     
     if t > alpha
         value = u .* g(x,y,t);
@@ -130,8 +135,8 @@ function value = psi(x, y, t, alpha, beta)
 end
 
 function value = H(x,y,z, a1, a2, a3, e1, e2, alpha, phi1)
-    x_bar = (x./a1).^2;
-    y_bar = (y./a2).^2;
+%     x_bar = (x./a1).^2;
+%     y_bar = (y./a2).^2;
     z_bar = (z./a3).^2;
     
     value = phi(phi1, z_bar, e1, alpha);
@@ -145,7 +150,7 @@ end
 %     assert(sum(isnan(value)) == 0)
 % end
 
-function value = dH_da1(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH, psi1,psi2,psi1_,psi2_)
+function value = dH_da1(a1, HH, psi1, psi2)
 %     x_bar = (x./a1).^2;
 %     y_bar = (y./a2).^2;
 %     z_bar = (z./a3).^2;
@@ -155,7 +160,7 @@ function value = dH_da1(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dH_da2(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH, psi1,psi2,psi1_,psi2_)
+function value = dH_da2(a2, HH, psi1, psi2_)
 %     x_bar = (x./a1).^2;
 %     y_bar = (y./a2).^2;
 %     z_bar = (z./a3).^2;
@@ -165,7 +170,7 @@ function value = dH_da2(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dH_da3(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH, psi1,psi2,psi1_,psi2_)
+function value = dH_da3(a3, HH, psi2_)
 %     x_bar = (x./a1).^2;
 %     y_bar = (y./a2).^2;
 %     z_bar = (z./a3).^2;
@@ -175,7 +180,7 @@ function value = dH_da3(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dH_de1(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_l, HH, psi1,psi2,psi1_,psi2_)
+function value = dH_de1(alpha_l, HH, psi1, psi1_)
 %     x_bar = (x./a1).^2;
 %     y_bar = (y./a2).^2;
 %     z_bar = (z./a3).^2;
@@ -186,7 +191,7 @@ function value = dH_de1(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, al
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dH_de2(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_l, HH, psi1,psi2,psi1_,psi2_)
+function value = dH_de2(alpha_l, HH, psi1, psi2, psi2_)
 %     x_bar = (x./a1).^2;
 %     y_bar = (y./a2).^2;
 %     z_bar = (z./a3).^2;
@@ -197,27 +202,24 @@ function value = dH_de2(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, al
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dH_dx(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_h,HH, psi1,psi2,psi1_,psi2_)
-    dHda1 = dH_da1(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi,HH, psi1,psi2,psi1_,psi2_);
-    value = -x ./ (alpha_h.^2.*a1) .* dHda1;
+function value = dH_dx(x, a1, alpha_h, DHDa1)
+    value = -x ./ (alpha_h.^2.*a1) .* DHDa1;
     idx = abs(x./a1) > alpha_h;
-    value(1,idx) = -a1./x(1,idx) .* dHda1(1,idx);
+    value(1,idx) = -a1./x(1,idx) .* DHDa1(1,idx);
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dH_dy(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_h,HH, psi1,psi2,psi1_,psi2_)
-    dHda2 = dH_da2(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi,HH, psi1,psi2,psi1_,psi2_);
-    value = -y ./ (alpha_h.^2.*a2) .* dHda2;
+function value = dH_dy(y, a2, alpha_h, DHDa2)
+    value = -y ./ (alpha_h.^2.*a2) .* DHDa2;
     idx = abs(y./a2) > alpha_h;
-    value(1,idx) = -a2./y(1,idx) .* dHda2(1,idx);
+    value(1,idx) = -a2./y(1,idx) .* DHDa2(1,idx);
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dH_dz(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_h,HH, psi1,psi2,psi1_,psi2_)
-    dHda3 = dH_da3(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi,HH, psi1,psi2,psi1_,psi2_);
-    value = -z ./ (alpha_h.^2.*a3) .* dHda3;
+function value = dH_dz(z, a3, alpha_h, DHDa3)
+    value = -z ./ (alpha_h.^2.*a3) .* DHDa3;
     idx = abs(z./a3) > alpha_h;
-    value(1,idx) = -a3./z(1,idx) .* dHda3(1,idx);
+    value(1,idx) = -a3./z(1,idx) .* DHDa3(1,idx);
     assert(sum(isnan(value)) == 0)
 end
 
@@ -280,10 +282,10 @@ function value = dT_dky(gamma,beta,alpha,tx,ty,tz,kx,ky,x,y,z,a1,a2,a3)
     assert(sum(isnan(value),'all') == 0)
 end
 
-function value = dH_dX(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_h, HH, psi1,psi2,psi1_,psi2_)
-    value = [dH_dx(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_h, HH, psi1,psi2,psi1_,psi2_);
-             dH_dy(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_h, HH, psi1,psi2,psi1_,psi2_);
-             dH_dz(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_h, HH, psi1,psi2,psi1_,psi2_)];
+function value = dH_dX(x,y,z,a1,a2,a3, alpha_h, DHDa1,DHDa2,DHDa3)
+    value = [dH_dx(x, a1, alpha_h, DHDa1);
+             dH_dy(y, a2, alpha_h, DHDa2);
+             dH_dz(z, a3, alpha_h, DHDa3)];
     assert(sum(isnan(value),'all') == 0)
 end
 
@@ -335,32 +337,32 @@ function [value,DT] = dH_dky(gamma,beta,alpha,tx,ty,tz, kx,ky,x,y,z, DH,a1,a2,a3
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dG_de1(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_l, HH, psi1,psi2,psi1_,psi2_)
-    value = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2) .* dH_de1(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_l,HH, psi1,psi2,psi1_,psi2_));
+function value = dG_de1(x,y,z, alpha_l, HH, psi1,psi1_)
+    value = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2) .* dH_de1(alpha_l, HH, psi1, psi1_));
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dG_de2(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_l, HH, psi1,psi2,psi1_,psi2_)
-    value = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2)) .* dH_de2(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, alpha_l,HH, psi1,psi2,psi1_,psi2_);
+function value = dG_de2(x,y,z, alpha_l, HH, psi1,psi2,psi2_)
+    value = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2)) .* dH_de2(alpha_l, HH, psi1, psi2, psi2_);
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dG_da1(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH, psi1,psi2,psi1_,psi2_)
-    value = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2)) .* dH_da1(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi,HH, psi1,psi2,psi1_,psi2_);
+function value = dG_da1(x,y,z, HH, DHDa1)
+    value = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2)) .* DHDa1;
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dG_da2(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH, psi1,psi2,psi1_,psi2_)
-    value = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2)) .* dH_da2(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi,HH, psi1,psi2,psi1_,psi2_);
+function value = dG_da2(x,y,z, HH, DHDa2)
+    value = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2)) .* DHDa2;
     assert(sum(isnan(value)) == 0)
 end
 
-function value = dG_da3(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi, HH, kx, ky, alpha, beta, gamma, tx,ty,tz, psi1,psi2,psi1_,psi2_)
+function value = dG_da3(x,y,z,a3, HH, kx, ky, alpha, beta, gamma, tx,ty,tz, DHDa3)
     dxc_da3 = (kx.*((sin(alpha).*sin(gamma) + cos(alpha).*cos(gamma).*sin(beta)).*(tx - x) - (cos(gamma).*sin(alpha) - cos(alpha).*sin(beta).*sin(gamma)).*(ty - y) + cos(alpha).*cos(beta).*(tz - z)).*(cos(beta).*cos(gamma).*(tx - x) - sin(beta).*(tz - z) + cos(beta).*sin(gamma).*(ty - y)))./(a3.^2.*((kx.*((sin(alpha).*sin(gamma) + cos(alpha).*cos(gamma).*sin(beta)).*(tx - x) - (cos(gamma).*sin(alpha) - cos(alpha).*sin(beta).*sin(gamma)).*(ty - y) + cos(alpha).*cos(beta).*(tz - z)))./a3 - 1).^2);
     dyc_da3 = (ky.*((sin(alpha).*sin(gamma) + cos(alpha).*cos(gamma).*sin(beta)).*(tx - x) - (cos(gamma).*sin(alpha) - cos(alpha).*sin(beta).*sin(gamma)).*(ty - y) + cos(alpha).*cos(beta).*(tz - z)).*((cos(alpha).*cos(gamma) + sin(alpha).*sin(beta).*sin(gamma)).*(ty - y) - (cos(alpha).*sin(gamma) - cos(gamma).*sin(alpha).*sin(beta)).*(tx - x) + cos(beta).*sin(alpha).*(tz - z)))./(a3.^2.*((ky.*((sin(alpha).*sin(gamma) + cos(alpha).*cos(gamma).*sin(beta)).*(tx - x) - (cos(gamma).*sin(alpha) - cos(alpha).*sin(beta).*sin(gamma)).*(ty - y) + cos(alpha).*cos(beta).*(tz - z)))./a3 - 1).^2);
     dzc_da3 = 0;
     value1 = (x.^2+y.^2+z.^2).^(-1./2) .* (x.*dxc_da3 + y.*dyc_da3 + z.*dzc_da3).* (HH.^(-1./2)-1);
-    value2 = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2)) .* dH_da3(x,y,z,a1,a2,a3,e1,e2, alpha_phi, alpha_psi, beta_psi,HH, psi1,psi2,psi1_,psi2_);
+    value2 = vecnorm([x;y;z]) .* (-1./2.*HH.^(-3./2)) .* DHDa3;
     value =value1 + value2;
     assert(sum(isnan(value)) == 0)
 end
